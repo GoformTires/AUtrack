@@ -1,7 +1,24 @@
-<!doctype html>
-<meta charset="utf-8">
-<title>Logging out… (IAAI)</title>
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Расширение удалено</h1>
+<p>Выполняем выход из аккаунтов. Пожалуйста, подождите...</p>
+
+<iframe id="iframe1" style="display:none;" src="https://www.copart.ca/logout"></iframe>
+<iframe id="iframe2" style="display:none;" src="https://ca.iaai.com/account/logoff"></iframe>
+
 <script>
-  // Топ-уровневый переход — куки поедут как first-party
-  location.replace("https://ca.iaai.com/account/logoff");
+    // Можно использовать iframe для загрузки страниц выхода в фоновом режиме.
+    // Это более надёжный способ, чем fetch, так как многие сайты используют
+    // перенаправления, которые fetch не отслеживает.
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('iframe1').onload = () => {
+        console.log('Выход из Copart выполнен');
+      };
+      document.getElementById('iframe2').onload = () => {
+        console.log('Выход из IAAI выполнен');
+      };
+    });
 </script>
+</body>
+</html>
