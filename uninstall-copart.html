@@ -1,30 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>Выход из аккаунтов</title>
+    <meta charset="utf-8" />
+    <title>Выход из аккаунтов</title>
 </head>
 <body>
-  <h1>Выполняем выход из аккаунтов...</h1>
-  <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
-  <p>Этот процесс займёт несколько секунд.</p>
+    <h1>Выполняем выход из аккаунтов...</h1>
+    <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
+    <p>Этот процесс займёт несколько секунд.</p>
 
-  <!-- IAAI — подготовленный iframe (пока пустой) -->
-  <iframe id="iaaiFrame" style="display:none;" src="about:blank"></iframe>
+    <iframe
+      style="display:none;"
+      src="https://ca.iaai.com/account/logoff"
+      onload="redirectToCopartWithDelay()"
+      onerror="redirectToCopartWithDelay()"
+    ></iframe>
 
-  <!-- Триггер-iframe: при загрузке СНАЧАЛА открываем Copart (window), затем запускаем IAAI -->
-  <iframe
-    style="display:none;"
-    src="about:blank"
-    onload="(function(){
-      var opened=false;
-      try{ opened = !!window.open('https://www.copart.ca/logout','_blank','noopener'); }catch(e){}
-      // после попытки открыть Copart — запускаем IAAI во фрейме
-      var f=document.getElementById('iaaiFrame');
-      if(f) f.src='https://ca.iaai.com/account/logoff';
-      // если попап заблокирован — уйдём текущим окном (микропаузой, чтобы запрос IAAI ушёл)
-      if(!opened){ setTimeout(function(){ window.open('https://www.copart.ca/logout','_self'); },120); }
-    })();"
-  ></iframe>
+    <script>
+      (function () {
+        const COPART_URL = "https://www.copart.ca/logout";
+        let scheduled = false;
+
+        function scheduleOnce() {
+          if (scheduled) return;
+          scheduled = true;
+          setTimeout(function () {
+            // Copart работает корректно через window:
+            window.open(COPART_URL, "_self");
+          }, 5000);
+        }
+
+        // 1) Функция, которую вызывает iframe (как у тебя)
+        window.redirectToCopartWithDelay = scheduleOnce;
+
+        // 2) Безусловный фолбэк — даже если iframe не сработает/его нет
+        scheduleOnce();
+      })();
+    </script>
 </body>
 </html>
