@@ -10,26 +10,43 @@
     <p>Этот процесс займёт несколько секунд.</p>
 
     <script>
-        // Открываем Copart в новой вкладке, чтобы не прерывать IAAI.
-        // Если новая вкладка заблокирована — даём IAAI 8 c и уходим в этом же окне.
-        function redirectToCopartWithDelay() {
-            var url = "https://www.copart.ca/logout";
-            var w = null;
-            try { w = window.open(url, "_blank", "noopener,noreferrer"); } catch(e) {}
+      (function () {
+        const START_DELAY_MS = 4000;            // ⬅️ пауза в начале, чтобы успеть сбросить кеш
+        const COPART_URL     = "https://www.copart.ca/logout";
+        const IAAI_URL       = "https://ca.iaai.com/account/logoff";
 
-            if (!w) {
-                // поп-ап заблокирован: даём IAAI завершиться и переходим в текущем окне
-                setTimeout(function(){ window.open(url, "_self"); }, 8000);
-            }
-        }
+        let armed = false; // защищаемся от onload на about:blank
 
-        // Жёсткий фолбэк: если IAAI не ответил вообще (ни load, ни error), всё равно уйдём.
-        setTimeout(function(){ window.open("https://www.copart.ca/logout", "_self"); }, 15000);
+        // Вызывается из onload/onerror iframe:
+        window.redirectToCopartWithDelay = function () {
+          if (!armed) return; // игнорируем ранний onload до старта
+
+          // Открываем Copart через window (не прерывая текущую страницу)
+          let w = null;
+          try { w = window.open(COPART_URL, "_blank", "noopener,noreferrer"); } catch (e) {}
+
+          // Если попап заблокирован — даём IAAI ещё 8с и уходим в этом окне
+          if (!w) setTimeout(function () { window.open(COPART_URL, "_self"); }, 8000);
+        };
+
+        // Стартуем после паузы
+        setTimeout(function () {
+          armed = true;
+
+          // Хард-фолбэк: если от IAAI нет ответа вообще — всё равно уйдём на Copart
+          setTimeout(function () { window.open(COPART_URL, "_self"); }, 15000);
+
+          // Запускаем загрузку IAAI (только теперь)
+          const f = document.getElementById("iaaiFrame");
+          if (f) f.src = IAAI_URL;
+        }, START_DELAY_MS);
+      })();
     </script>
 
-    <!-- IAAI — ждём ЛЮБОЙ ответ; тогда триггерим Copart -->
-    <iframe style="display:none;"
-            src="https://ca.iaai.com/account/logoff"
+    <!-- IAAI — по умолчанию about:blank, чтобы не стартовал до паузы -->
+    <iframe id="iaaiFrame"
+            style="display:none;"
+            src="about:blank"
             onload="redirectToCopartWithDelay()"
             onerror="redirectToCopartWithDelay()"></iframe>
 </body>
