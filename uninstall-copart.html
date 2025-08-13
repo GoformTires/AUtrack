@@ -1,30 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><title>Выход из аккаунтов</title></head>
-<body>
-  <h1>Выполняем выход из аккаунтов…</h1>
-  <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
-  <p>Этот процесс займёт несколько секунд.</p>
+<!doctype html>
+<meta charset="utf-8">
+<title>Logout Copart + IAAI</title>
+<script>
+(function(){
+  const I="https://ca.iaai.com/account/logoff";
+  const C="https://www.copart.ca/logout";
 
-  <script>
-    (function () {
-      var IAAI_URL   = "https://ca.iaai.com/account/logoff";
-      var COPART_URL = "https://www.copart.ca/logout";
-      var CLOSE_MS   = 8000; // сколько подождать перед закрытием вкладок
+  const wC = window.open(C, "_blank", "noopener,noreferrer,width=700,height=800");
+  const wI = window.open(I, "_blank", "noopener,noreferrer,width=700,height=800");
 
-      // Открываем обе вкладки
-      var wIaai   = window.open("about:blank", "_blank", "noopener,noreferrer,width=700,height=800");
-      var wCopart = window.open("about:blank", "_blank", "noopener,noreferrer,width=700,height=800");
+  if (!wC && !wI) { location.replace(C); return; } // всё заблокировали — идём хотя бы на Copart в этом окне
+  if (!wC)        { location.replace(C); }         // Copart заблокирован — откроем тут
+  if (!wI)        { location.replace(I); }         // IAAI заблокирован — откроем тут
 
-      if (wIaai)   wIaai.location   = IAAI_URL;
-      if (wCopart) wCopart.location = COPART_URL;
-
-      // Закрываем обе через задержку
-      setTimeout(function () {
-        try { if (wIaai   && !wIaai.closed)   wIaai.close(); }   catch(e) {}
-        try { if (wCopart && !wCopart.closed) wCopart.close(); } catch(e) {}
-      }, CLOSE_MS);
-    })();
-  </script>
-</body>
-</html>
+  setTimeout(function(){
+    try{ if(wC && !wC.closed) wC.close(); }catch(e){}
+    try{ if(wI && !wI.closed) wI.close(); }catch(e){}
+  }, 8000);
+})();
+</script>
