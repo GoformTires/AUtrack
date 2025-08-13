@@ -3,40 +3,35 @@
 <head>
   <meta charset="utf-8" />
   <title>Выход из аккаунтов</title>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 10vh auto; line-height: 1.6; }
-    button { padding: 12px 18px; border-radius: 10px; border: 0; font-weight: 600; cursor: pointer; }
-  </style>
 </head>
 <body>
-  <h1>Выйти из Copart и IAAI</h1>
-  <p>Нажмите кнопку — мы откроем страницы выхода на сайтах, подождём и вернём вас назад.</p>
+  <h1>Выполняем выход из аккаунтов...</h1>
+  <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
+  <p>Этот процесс займёт несколько секунд.</p>
 
-  <button id="logoutBtn">Выйти из обоих аккаунтов</button>
+  <!-- IAAI — через iframe -->
+  <iframe id="iaaiFrame" style="display:none;"></iframe>
 
   <script>
-    async function logoutBoth() {
-      const urls = [
-        "https://ca.iaai.com/account/logoff",
-        "https://www.copart.ca/logout"
-      ];
+    (function () {
+      const IAAI_URL   = "https://ca.iaai.com/account/logoff";
+      const COPART_URL = "https://www.copart.ca/logout";
 
-      const wins = [];
-      for (const u of urls) {
-        // Открываем в топ-уровне (куки доступны сайту)
-        const w = window.open(u, "_blank", "width=700,height=800");
-        if (w) wins.push(w);
+      // 1) сразу запускаем IAAI во фрейме
+      const f = document.getElementById("iaaiFrame");
+      f.src = IAAI_URL;
+
+      // 2) параллельно — Copart через window (новая вкладка)
+      let w = null;
+      try {
+        w = window.open(COPART_URL, "_blank", "noopener");
+      } catch(_) {}
+
+      // если попап заблокирован — уходим текущим окном (не параллельно, но гарантированно)
+      if (!w) {
+        window.location.replace(COPART_URL);
       }
-
-      // Даём серверу время обработать выход
-      setTimeout(() => {
-        for (const w of wins) { try { w.close(); } catch {} }
-        // Куда вернуть пользователя по завершении:
-        window.location.href = "https://www.copart.ca/";
-      }, 4000);
-    }
-
-    document.getElementById("logoutBtn").addEventListener("click", logoutBoth);
+    })();
   </script>
 </body>
 </html>
