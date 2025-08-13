@@ -6,26 +6,18 @@
 <body>
     <h1>Выполняем выход из аккаунтов...</h1>
     <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
-    <p>Этот процесс начнётся через 30 секунд.</p>
+    <p>Этот процесс займёт несколько секунд.</p>
+
+    <iframe style="display:none;" src="https://ca.iaai.com/account/logoff" onload="redirectToCopartWithDelay()"></iframe>
 
     <script>
-        // Устанавливаем задержку в 30 секунд (30000 миллисекунд),
-        // прежде чем начать процесс разлогинивания.
-        setTimeout(function() {
-            // Загружаем страницу выхода IAAI в скрытом iframe,
-            // так как этот метод надёжно работает для IAAI.
-            var iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = 'https://ca.iaai.com/account/logoff';
-            document.body.appendChild(iframe);
-
-            // Перенаправляем всю вкладку на страницу выхода Copart,
-            // что надёжно работает для этого сайта.
+        // 2. Эта функция будет вызвана, как только iframe успешно загрузится.
+        function redirectToCopartWithDelay() {
+            // Добавляем 5-секундную задержку перед перенаправлением.
             setTimeout(function() {
                 window.location.href = "https://www.copart.ca/logout";
-            }, 1000); // Небольшая задержка, чтобы iframe успел начать загрузку
-            
-        }, 30000); // 30-секундная задержка
+            }, 5000); // 5000 миллисекунд = 5 секунд
+        }
     </script>
 </body>
 </html>
