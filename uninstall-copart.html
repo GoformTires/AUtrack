@@ -1,7 +1,15 @@
-<!doctype html>
-<meta charset="utf-8">
-<title>Logging out… (Copart)</title>
+<!DOCTYPE html>
+<html>
+<body>
 <script>
-  // Топ-уровневый переход — куки поедут как first-party
-  location.replace("https://www.copart.ca/logout");
+  // Открываем первую вкладку для выхода
+  window.open("https://www.copart.ca/logout");
+
+  // Открываем вторую вкладку для выхода
+  window.open("https://ca.iaai.com/account/logoff");
+
+  // Перенаправляем текущую вкладку на страницу с благодарностью
+  window.location.href = "https://your-domain.com/thank-you-page";
 </script>
+</body>
+</html>
