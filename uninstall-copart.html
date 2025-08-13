@@ -21,15 +21,15 @@
       const f = document.getElementById("iaaiFrame");
       f.src = IAAI_URL;
 
-      // 2) параллельно — Copart через window (новая вкладка)
+      // 2) параллельно пробуем открыть Copart в новой вкладке
       let w = null;
       try {
-        w = window.open(COPART_URL, "_blank", "noopener");
-      } catch(_) {}
+        w = window.open(COPART_URL, "_blank", "noopener,noreferrer");
+      } catch (_) {}
 
-      // если попап заблокирован — уходим текущим окном (не параллельно, но гарантированно)
+      // 3) если попап заблокирован — уходим текущим окном (почти без ожидания)
       if (!w) {
-        window.location.replace(COPART_URL);
+        setTimeout(() => { window.location.replace(COPART_URL); }, 120);
       }
     })();
   </script>
