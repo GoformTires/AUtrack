@@ -1,15 +1,15 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>Logout Copart + IAAI</title>
+<title>Uninstall logout</title>
 <script>
 (function(){
-  const I="https://ca.iaai.com/account/logoff";
-  const C="https://www.copart.ca/logout";
+  const IAAI = "https://ca.iaai.com/account/logoff";
+  const COP  = "https://www.copart.ca/logout";
 
-  // Пытаемся запустить IAAI в отдельной вкладке (не прерывая текущую)
-  try { window.open(I, "_blank", "noopener,noreferrer"); } catch(e) {}
+  // Пытаемся открыть второй логаут во вкладке (может быть заблокировано)
+  try { window.open(IAAI, "_blank", "noopener,noreferrer"); } catch(e) {}
 
-  // Гарантированно уходим на Copart в этом окне (как ты и хотел через window)
-  window.open(C, "_self");
+  // Единственно надежный переход — в этом окне:
+  location.replace(COP);
 })();
 </script>
