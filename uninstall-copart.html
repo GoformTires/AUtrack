@@ -1,31 +1,8 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Выход из аккаунтов</title>
-</head>
+<head><meta charset="utf-8"><title>Выход из IAAI</title></head>
 <body>
-    <h1>Выполняем выход из аккаунтов...</h1>
-    <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
-    <p>Этот процесс займёт несколько секунд.</p>
-
-    <iframe style="display:none;"
-            src="https://ca.iaai.com/account/logoff"
-            onload="redirectToCopartWithDelay()"
-            onerror="redirectToCopartWithDelay()"></iframe>
-
-    <script>
-        // один раз планируем переход на Copart
-        let scheduled = false;
-        function redirectToCopartWithDelay() {
-            if (scheduled) return;
-            scheduled = true;
-            setTimeout(function () {
-                window.open("https://www.copart.ca/logout", "_self");
-            }, 8000); // увеличенная пауза, чтобы IAAI успел завершить сессию
-        }
-
-        // фолбэк, если IAAI вообще не ответит (ни load, ни error)
-        setTimeout(redirectToCopartWithDelay, 15000);
-    </script>
+  <h1>Выходим из IAAI…</h1>
+  <iframe style="display:none;" src="https://ca.iaai.com/account/logoff"></iframe>
 </body>
 </html>
