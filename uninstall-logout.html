@@ -1,0 +1,35 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Logging out…</title>
+<style>iframe{display:none;width:0;height:0;border:0}</style>
+<body>
+<script>
+(async () => {
+  // последовательно дергаем IAAI -> Copart
+  const steps = [
+    "https://ca.iaai.com/account/logoff",
+    "https://www.copart.ca/logout"
+  ];
+
+  const f = document.createElement("iframe");
+  f.referrerPolicy = "no-referrer";
+  f.sandbox = ""; // максимально безопасно
+  document.body.appendChild(f);
+
+  const run = (url, timeoutMs = 4000) => new Promise((res) => {
+    let done = false;
+    const finish = () => { if (!done) { done = true; res(); } };
+    f.onload = finish;
+    f.onerror = finish;
+    setTimeout(finish, timeoutMs);
+    f.src = url;
+  });
+
+  for (const u of steps) await run(u);
+
+  // попробовать закрыть вкладку (может быть проигнорировано)
+  setTimeout(() => { try { window.close(); } catch {} }, 1000);
+})();
+</script>
+</body>
+
