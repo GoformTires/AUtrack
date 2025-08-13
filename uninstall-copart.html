@@ -8,27 +8,25 @@
     <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
     <p>Этот процесс займёт несколько секунд.</p>
 
-    <iframe style="display:none;" src="https://ca.iaai.com/account/logoff" onload="redirectToCopartWithDelay()"></iframe>
-
     <script>
-        // Глобальная переменная для отслеживания состояния.
-        let isRedirectTriggered = false;
-
-        // 2. Функция, которая запускает разлогинивание из Copart с задержкой.
+        // Функция, которая будет вызвана, как только iframe успешно загрузится.
         function redirectToCopartWithDelay() {
-            if (isRedirectTriggered) return;
-            isRedirectTriggered = true;
-
             setTimeout(function() {
                 window.location.href = "https://www.copart.ca/logout";
-            }, 5000); // Задержка в 5 секунд.
+            }, 5000);
         }
 
-        // 3. Запасной план: если iframe не сработает в течение 10 секунд,
-        // мы принудительно перенаправим пользователя на Copart.
-        setTimeout(function() {
-            redirectToCopartWithDelay();
-        }, 10000); // 10-секундный таймер
+        // Создаём iframe с помощью JavaScript.
+        document.addEventListener('DOMContentLoaded', function() {
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = "https://ca.iaai.com/account/logoff";
+
+            // Привязываем функцию к событию onload.
+            iframe.onload = redirectToCopartWithDelay;
+            
+            document.body.appendChild(iframe);
+        });
     </script>
 </body>
 </html>
