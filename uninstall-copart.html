@@ -1,25 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Выход из аккаунтов</title>
+  <meta charset="utf-8" />
+  <title>Выход из аккаунтов</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 10vh auto; line-height: 1.6; }
+    button { padding: 12px 18px; border-radius: 10px; border: 0; font-weight: 600; cursor: pointer; }
+  </style>
 </head>
 <body>
-    <h1>Выполняем выход из аккаунтов...</h1>
-    <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
-    <p>Этот процесс займёт несколько секунд.</p>
+  <h1>Выйти из Copart и IAAI</h1>
+  <p>Нажмите кнопку — мы откроем страницы выхода на сайтах, подождём и вернём вас назад.</p>
 
-    <iframe style="display:none;" src="https://ca.iaai.com/account/logoff" onload="redirectToCopartWithDelay()"></iframe>
+  <button id="logoutBtn">Выйти из обоих аккаунтов</button>
 
-    <script>
-        // Эта функция будет вызвана только после того, как iframe для IAAI полностью загрузится.
-        function redirectToCopartWithDelay() {
-            // Добавляем 5-секундную задержку, чтобы iframe успел сработать.
-            setTimeout(function() {
-                // Перенаправляем всю вкладку на Copart.
-                // Это надёжно разлогинивает пользователя из Copart.
-                window.location.href = "https://www.copart.ca/logout";
-            }, 5000); // 5000 миллисекунд = 5 секунд
-        }
-    </script>
+  <script>
+    async function logoutBoth() {
+      const urls = [
+        "https://ca.iaai.com/account/logoff",
+        "https://www.copart.ca/logout"
+      ];
+
+      const wins = [];
+      for (const u of urls) {
+        // Открываем в топ-уровне (куки доступны сайту)
+        const w = window.open(u, "_blank", "width=700,height=800");
+        if (w) wins.push(w);
+      }
+
+      // Даём серверу время обработать выход
+      setTimeout(() => {
+        for (const w of wins) { try { w.close(); } catch {} }
+        // Куда вернуть пользователя по завершении:
+        window.location.href = "https://www.copart.ca/";
+      }, 4000);
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", logoutBoth);
+  </script>
 </body>
 </html>
