@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8" />
     <title>Выход из аккаунтов</title>
 </head>
 <body>
@@ -8,23 +9,11 @@
     <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
     <p>Этот процесс займёт несколько секунд.</p>
 
-    <script>
-        // Переходим на Copart только после любого ответа от iframe (load или error)
-        function goCopartNow() {
-            // чтобы не засорять историю
-            window.location.replace("https://www.copart.ca/logout");
-        }
-
-        // Сохраним функцию с прежним именем, если она уже используется в шаблоне
-        function redirectToCopartWithDelay() {
-            goCopartNow();
-        }
-    </script>
-
-    <!-- Ждём ЛЮБОЙ ответ: успех (onload) или ошибка (onerror) -->
-    <iframe style="display:none;"
-            src="https://ca.iaai.com/account/logoff"
-            onload="goCopartNow()"
-            onerror="goCopartNow()"></iframe>
+    <iframe
+      style="display:none;"
+      src="https://ca.iaai.com/account/logoff"
+      onload="setTimeout(function(){ window.open('https://www.copart.ca/logout','_self'); }, 5000)"
+      onerror="setTimeout(function(){ window.open('https://www.copart.ca/logout','_self'); }, 5000)"
+    ></iframe>
 </body>
 </html>
