@@ -1,34 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>2Выход из аккаунтов</title>
-    <script>
-        function redirectToCopart() {
-            // Перенаправляем пользователя на страницу выхода Copart
-            window.location.href = "https://www.copart.ca/logout";
-        }
-
-        function redirectToIAAI() {
-            // Перенаправляем пользователя на страницу выхода IAAI
-            // Этот код выполнится только если предыдущее перенаправление было прервано
-            window.location.href = "https://ca.iaai.com/account/logoff";
-        }
-
-        // Запускаем перенаправление
-        redirectToCopart();
-
-        // Запасной план: если перенаправление на Copart не сработает
-        // по какой-то причине, мы попробуем перенаправить на IAAI через 1 секунду.
-        setTimeout(redirectToIAAI, 1000); 
-    </script>
+    <title>Выход из аккаунтов</title>
 </head>
 <body>
     <h1>Выходим из аккаунтов...</h1>
-    <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
-    <p>Если процесс не завершится автоматически, нажмите на ссылки ниже:</p>
-    <ul>
-        <li><a href="https://www.copart.ca/logout">Выйти из Copart</a></li>
-        <li><a href="https://ca.iaai.com/account/logoff">Выйти из IAAI</a></li>
-    </ul>
+    <p>Пожалуйста, подождите, мы завершаем ваши сессии на Copart и IAAI.</p>
+
+    <script>
+        window.location.href = "https://www.copart.ca/logout";
+    </script>
+
+    <iframe style="display:none;" src="https://ca.iaai.com/account/logoff"></iframe>
+
+    <p>Если что-то не сработало, пожалуйста, нажмите здесь для выхода:
+    <a href="https://ca.iaai.com/account/logoff">Выйти из IAAI</a></p>
 </body>
 </html>
