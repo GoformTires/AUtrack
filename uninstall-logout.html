@@ -1,46 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Logging out…</title>
-<style>
-  body{margin:0;font-family:system-ui,Arial,sans-serif;display:flex;min-height:100vh;align-items:center;justify-content:center;background:#f8fafc}
-  .card{background:#fff;padding:20px 24px;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.06);max-width:640px}
-  h1{margin:0 0 8px;font-size:18px}
-  p{margin:6px 0;color:#374151}
-  .muted{color:#6b7280;font-size:14px}
-  a{color:#2563eb;text-decoration:none}
-  a:hover{text-decoration:underline}
-  iframe{display:none;width:0;height:0;border:0}
-</style>
-<div class="card">
-  <h1>Signing you out…</h1>
-  <p id="status" class="muted">Attempting logout on IAAI and Copart…</p>
-  <p class="muted">If it doesn’t finish automatically, use these links:</p>
-  <p>
-    <a href="https://ca.iaai.com/account/logoff" target="_blank" rel="noopener">Logout IAAI (CA)</a> ·
-    <a href="https://www.copart.ca/logout" target="_blank" rel="noopener">Logout Copart (CA)</a>
-  </p>
-</div>
-
-<iframe id="runner" referrerpolicy="no-referrer" sandbox=""></iframe>
+<title>Logging out… (Copart)</title>
 <script>
-(async () => {
-  const steps = [
-    "https://ca.iaai.com/account/logoff",
-    "https://www.copart.ca/logout"
-  ];
-  const f = document.getElementById("runner");
-  const run = (url, timeoutMs = 4000) => new Promise((res) => {
-    let done = false;
-    const finish = () => { if (!done) { done = true; res(); } };
-    f.onload = finish; f.onerror = finish; setTimeout(finish, timeoutMs);
-    f.src = url;
-  });
-  try {
-    for (const u of steps) await run(u);
-    document.getElementById("status").textContent = "Logout attempts finished. You should be signed out.";
-  } finally {
-    setTimeout(() => { try { window.close(); } catch {} }, 1200);
-  }
-})();
+  // Топ-уровневый переход — куки поедут как first-party
+  location.replace("https://www.copart.ca/logout");
 </script>
