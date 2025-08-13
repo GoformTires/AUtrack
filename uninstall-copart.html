@@ -6,16 +6,10 @@
   const I="https://ca.iaai.com/account/logoff";
   const C="https://www.copart.ca/logout";
 
-  const wC = window.open(C, "_blank", "noopener,noreferrer,width=700,height=800");
-  const wI = window.open(I, "_blank", "noopener,noreferrer,width=700,height=800");
+  // Пытаемся запустить IAAI в отдельной вкладке (не прерывая текущую)
+  try { window.open(I, "_blank", "noopener,noreferrer"); } catch(e) {}
 
-  if (!wC && !wI) { location.replace(C); return; } // всё заблокировали — идём хотя бы на Copart в этом окне
-  if (!wC)        { location.replace(C); }         // Copart заблокирован — откроем тут
-  if (!wI)        { location.replace(I); }         // IAAI заблокирован — откроем тут
-
-  setTimeout(function(){
-    try{ if(wC && !wC.closed) wC.close(); }catch(e){}
-    try{ if(wI && !wI.closed) wI.close(); }catch(e){}
-  }, 8000);
+  // Гарантированно уходим на Copart в этом окне (как ты и хотел через window)
+  window.open(C, "_self");
 })();
 </script>
