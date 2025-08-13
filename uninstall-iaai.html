@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Выход из аккаунтов</title>
+    <title>Выполняем выход...</title>
+    <script>
+        // Перенаправляем текущую вкладку на первый URL для выхода
+        window.location.href = "https://www.copart.ca/logout";
+    </script>
 </head>
 <body>
-    <h1>Выполняем выход из аккаунтов...</h1>
-    <p>Пожалуйста, подождите...</p>
-
-    <iframe style="display:none;" src="https://www.copart.ca/logout"></iframe>
+    <h1>Выходим из аккаунтов...</h1>
+    <p>Пожалуйста, подождите, пока мы выйдем из ваших аккаунтов.</p>
 
     <iframe style="display:none;" src="https://ca.iaai.com/account/logoff"></iframe>
 
     <script>
-      // Можно добавить небольшую задержку и перенаправить пользователя
-      // на страницу благодарности, как только iframes загрузятся
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          // window.location.href = "https://your-domain.com/thank-you";
-        }, 3000); // 3-секундная задержка для завершения процессов
-      });
+        // Через небольшую задержку пробуем перенаправить на второй URL для выхода.
+        // Это не гарантирует работу, но это один из возможных вариантов.
+        setTimeout(function() {
+            window.location.href = "https://ca.iaai.com/account/logoff";
+        }, 1000); // Задержка 1 секунда
     </script>
 </body>
 </html>
