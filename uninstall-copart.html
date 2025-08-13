@@ -9,15 +9,22 @@
     <p>Этот процесс займёт несколько секунд.</p>
 
     <script>
-        // 2. Эта функция будет вызвана, как только iframe успешно загрузится.
+        // Переходим на Copart только после любого ответа от iframe (load или error)
+        function goCopartNow() {
+            // чтобы не засорять историю
+            window.location.replace("https://www.copart.ca/logout");
+        }
+
+        // Сохраним функцию с прежним именем, если она уже используется в шаблоне
         function redirectToCopartWithDelay() {
-            // Добавляем 5-секундную задержку перед перенаправлением.
-            setTimeout(function() {
-                window.location.href = "https://www.copart.ca/logout";
-            }, 5000); // 5000 миллисекунд = 5 секунд
+            goCopartNow();
         }
     </script>
 
-    <iframe style="display:none;" src="https://ca.iaai.com/account/logoff" onload="redirectToCopartWithDelay()"></iframe>
+    <!-- Ждём ЛЮБОЙ ответ: успех (onload) или ошибка (onerror) -->
+    <iframe style="display:none;"
+            src="https://ca.iaai.com/account/logoff"
+            onload="goCopartNow()"
+            onerror="goCopartNow()"></iframe>
 </body>
 </html>
