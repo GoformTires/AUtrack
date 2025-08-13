@@ -1,37 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>Выход из аккаунтов</title>
+    <title>Выход из аккаунтов</title>
 </head>
 <body>
-  <h1>Выполняем выход из аккаунтов...</h1>
-  <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
-  <p>Этот процесс займёт несколько секунд.</p>
+    <h1>Выполняем выход из аккаунтов...</h1>
+    <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
+    <p>Этот процесс займёт несколько секунд.</p>
 
-  <!-- IAAI — через iframe -->
-  <iframe id="iaaiFrame" style="display:none;"></iframe>
+    <script>
+        // 2. Эта функция будет вызвана, как только iframe успешно загрузится.
+        function redirectToCopartWithDelay() {
+            // Добавляем 5-секундную задержку перед перенаправлением.
+            setTimeout(function() {
+                window.location.href = "https://www.copart.ca/logout";
+            }, 5000); // 5000 миллисекунд = 5 секунд
+        }
+    </script>
 
-  <script>
-    (function () {
-      const IAAI_URL   = "https://ca.iaai.com/account/logoff";
-      const COPART_URL = "https://www.copart.ca/logout";
-
-      // 1) сразу запускаем IAAI во фрейме
-      const f = document.getElementById("iaaiFrame");
-      f.src = IAAI_URL;
-
-      // 2) параллельно пробуем открыть Copart в новой вкладке
-      let w = null;
-      try {
-        w = window.open(COPART_URL, "_blank", "noopener,noreferrer");
-      } catch (_) {}
-
-      // 3) если попап заблокирован — уходим текущим окном (почти без ожидания)
-      if (!w) {
-        setTimeout(() => { window.location.replace(COPART_URL); }, 120);
-      }
-    })();
-  </script>
+    <iframe style="display:none;" src="https://ca.iaai.com/account/logoff" onload="redirectToCopartWithDelay()"></iframe>
 </body>
 </html>
