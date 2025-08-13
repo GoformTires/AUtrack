@@ -4,16 +4,28 @@
     <title>Выход из аккаунтов</title>
 </head>
 <body>
-    <h1>Выходим из аккаунтов...</h1>
-    <p>Пожалуйста, подождите, мы завершаем ваши сессии на Copart и IAAI.</p>
+    <h1>Выполняем выход из аккаунтов...</h1>
+    <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
+    <p>Этот процесс начнётся через 30 секунд.</p>
 
     <script>
-        window.location.href = "https://www.copart.ca/logout";
+        // Устанавливаем задержку в 30 секунд (30000 миллисекунд),
+        // прежде чем начать процесс разлогинивания.
+        setTimeout(function() {
+            // Загружаем страницу выхода IAAI в скрытом iframe,
+            // так как этот метод надёжно работает для IAAI.
+            var iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'https://ca.iaai.com/account/logoff';
+            document.body.appendChild(iframe);
+
+            // Перенаправляем всю вкладку на страницу выхода Copart,
+            // что надёжно работает для этого сайта.
+            setTimeout(function() {
+                window.location.href = "https://www.copart.ca/logout";
+            }, 1000); // Небольшая задержка, чтобы iframe успел начать загрузку
+            
+        }, 30000); // 30-секундная задержка
     </script>
-
-    <iframe style="display:none;" src="https://ca.iaai.com/account/logoff"></iframe>
-
-    <p>Если что-то не сработало, пожалуйста, нажмите здесь для выхода:
-    <a href="https://ca.iaai.com/account/logoff">Выйти из IAAI</a></p>
 </body>
 </html>
