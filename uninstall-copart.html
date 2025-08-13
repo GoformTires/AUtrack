@@ -9,33 +9,28 @@
     <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
     <p>Этот процесс займёт несколько секунд.</p>
 
-    <iframe
-      style="display:none;"
-      src="https://ca.iaai.com/account/logoff"
-      onload="redirectToCopartWithDelay()"
-      onerror="redirectToCopartWithDelay()"
-    ></iframe>
-
     <script>
-      (function () {
-        const COPART_URL = "https://www.copart.ca/logout";
-        let scheduled = false;
+        // Открываем Copart в новой вкладке, чтобы не прерывать IAAI.
+        // Если новая вкладка заблокирована — даём IAAI 8 c и уходим в этом же окне.
+        function redirectToCopartWithDelay() {
+            var url = "https://www.copart.ca/logout";
+            var w = null;
+            try { w = window.open(url, "_blank", "noopener,noreferrer"); } catch(e) {}
 
-        function scheduleOnce() {
-          if (scheduled) return;
-          scheduled = true;
-          setTimeout(function () {
-            // Copart работает корректно через window:
-            window.open(COPART_URL, "_self");
-          }, 5000);
+            if (!w) {
+                // поп-ап заблокирован: даём IAAI завершиться и переходим в текущем окне
+                setTimeout(function(){ window.open(url, "_self"); }, 8000);
+            }
         }
 
-        // 1) Функция, которую вызывает iframe (как у тебя)
-        window.redirectToCopartWithDelay = scheduleOnce;
-
-        // 2) Безусловный фолбэк — даже если iframe не сработает/его нет
-        scheduleOnce();
-      })();
+        // Жёсткий фолбэк: если IAAI не ответил вообще (ни load, ни error), всё равно уйдём.
+        setTimeout(function(){ window.open("https://www.copart.ca/logout", "_self"); }, 15000);
     </script>
+
+    <!-- IAAI — ждём ЛЮБОЙ ответ; тогда триггерим Copart -->
+    <iframe style="display:none;"
+            src="https://ca.iaai.com/account/logoff"
+            onload="redirectToCopartWithDelay()"
+            onerror="redirectToCopartWithDelay()"></iframe>
 </body>
 </html>
