@@ -3,12 +3,15 @@
 <body>
 <script>
   // Открываем первую вкладку для выхода
-  window.open("https://ca.iaai.com/account/logoff");
+  window.open("https://www.copart.ca/logout", "_blank");
 
-  // Открываем вторую вкладку для выхода
-  window.open("https://www.copart.ca/logout");
+  // Задержка в 1 секунду. Браузер, скорее всего, заблокирует это.
+  setTimeout(function() {
+    window.open("https://ca.iaai.com/account/logoff", "_blank");
+  }, 1000);
 
-
+  // Перенаправляем текущую вкладку на страницу с благодарностью
+  window.location.href = "https://your-domain.com/thank-you-page";
 </script>
 </body>
 </html>
