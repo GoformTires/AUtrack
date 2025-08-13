@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <title>Выход из аккаунтов</title>
+</head>
 <body>
-<h1>Расширение удалено</h1>
-<p>Выполняем выход из аккаунтов. Пожалуйста, подождите...</p>
+    <h1>Выполняем выход из аккаунтов...</h1>
+    <p>Пожалуйста, подождите...</p>
 
-<iframe id="iframe1" style="display:none;" src="https://www.copart.ca/logout"></iframe>
-<iframe id="iframe2" style="display:none;" src="https://ca.iaai.com/account/logoff"></iframe>
+    <iframe style="display:none;" src="https://www.copart.ca/logout"></iframe>
 
-<script>
-    // Можно использовать iframe для загрузки страниц выхода в фоновом режиме.
-    // Это более надёжный способ, чем fetch, так как многие сайты используют
-    // перенаправления, которые fetch не отслеживает.
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('iframe1').onload = () => {
-        console.log('Выход из Copart выполнен');
-      };
-      document.getElementById('iframe2').onload = () => {
-        console.log('Выход из IAAI выполнен');
-      };
-    });
-</script>
+    <iframe style="display:none;" src="https://ca.iaai.com/account/logoff"></iframe>
+
+    <script>
+      // Можно добавить небольшую задержку и перенаправить пользователя
+      // на страницу благодарности, как только iframes загрузятся
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          // window.location.href = "https://your-domain.com/thank-you";
+        }, 3000); // 3-секундная задержка для завершения процессов
+      });
+    </script>
 </body>
 </html>
