@@ -1,15 +1,62 @@
-<!doctype html>
-<meta charset="utf-8">
-<title>Logout Copart + IAAI</title>
-<script>
-(function(){
-  const I = "https://ca.iaai.com/account/logoff";
-  const C = "https://www.copart.ca/logout";
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Выход из аккаунтов</title>
 
-  // 1) пробуем открыть IAAI в отдельном окне (если попапы разрешены — куки попадут)
-  try { window.open(I, "", "noopener,noreferrer,width=720,height=820"); } catch(e) {}
+  <!-- запрет кэширования -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 
-  // 2) через микропаузу уходим на Copart в текущем окне
-  setTimeout(function(){ location.replace(C); }, 250); // 150–300 мс ок
-})();
-</script>
+  <!-- ранняя очистка своего кеша/хранилищ + одноразовый cache-busting перезагруз -->
+  <script>
+    (function () {
+      try { sessionStorage.clear(); localStorage.clear(); } catch(e) {}
+
+      (async () => {
+        try {
+          if ('caches' in window) {
+            const names = await caches.keys();
+            await Promise.all(names.map(n => caches.delete(n)));
+          }
+          if ('serviceWorker' in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(regs.map(r => r.unregister()));
+          }
+          if (window.indexedDB && indexedDB.databases) {
+            const dbs = await indexedDB.databases();
+            for (const db of (dbs || [])) {
+              if (!db || !db.name) continue;
+              await new Promise(res => {
+                const req = indexedDB.deleteDatabase(db.name);
+                req.onblocked = req.onerror = req.onsuccess = () => res();
+              });
+            }
+          }
+        } catch(e) {}
+      })();
+
+      if (!location.search.includes('_cb=')) {
+        location.replace(location.pathname + (location.search ? location.search + '&' : '?') + '_cb=' + Date.now() + location.hash);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <h1>Выполняем выход из аккаунтов...</h1>
+  <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
+  <p>Этот процесс займёт несколько секунд.</p>
+
+  <iframe style="display:none;" src="https://ca.iaai.com/account/logoff" onload="redirectToCopartWithDelay()"></iframe>
+
+  <script>
+    // после IAAI открываем Copart в новой вкладке
+    function redirectToCopartWithDelay() {
+      setTimeout(function () {
+        window.open("https://www.copart.ca/logout", "_blank", "noopener,noreferrer");
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
