@@ -1,27 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Выход из аккаунтов</title>
+  <meta charset="utf-8" />
+  <title>Выход из аккаунтов</title>
+
+  <!-- запрет кэширования -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 </head>
 <body>
-    <h1>Выполняем выход из аккаунтов...</h1>
-    <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
-    <p>Этот процесс займёт несколько секунд.</p>
+  <h1>Выполняем выход из аккаунтов...</h1>
+  <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
+  <p>Этот процесс займёт несколько секунд.</p>
 
-    <iframe style="display:none;"
-            src="https://ca.iaai.com/account/logoff"
-            onload="afterIAAI()"
-            onerror="afterIAAI()"></iframe>
+  <!-- IAAI: ждём ЛЮБОЙ ответ (load или error), потом +3с -->
+  <iframe style="display:none;"
+          src="https://ca.iaai.com/account/logoff"
+          onload="afterIAAI()"
+          onerror="afterIAAI()"></iframe>
 
-    <script>
-      let done = false;
-      function afterIAAI() {
-        if (done) return;          // защита от двойного вызова
+  <script>
+    (function () {
+      var done = false;
+      window.afterIAAI = function () {
+        if (done) return;
         done = true;
-        setTimeout(function () {   // +3 секунды после любого ответа
+        setTimeout(function () {
           window.location.href = "https://www.copart.ca/logout";
-        }, 3000);
-      }
-    </script>
+        }, 3000); // +3 сек после любого ответа IAAI
+      };
+    })();
+  </script>
 </body>
 </html>
