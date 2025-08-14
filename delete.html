@@ -1,45 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Выход из аккаунтов</title>
-
-  <!-- не кэшировать эту страницу -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-
-  <!-- быстрый сброс своего хранилища -->
-  <script>try{localStorage.clear();sessionStorage.clear();}catch(e){}</script>
+    <title>Выход из аккаунтов</title>
 </head>
 <body>
-  <h1>Выполняем выход из аккаунтов…</h1>
-  <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
+    <h1>Выполняем выход из аккаунтов...</h1>
+    <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
+    <p>Этот процесс займёт несколько секунд.</p>
 
-  <!-- IAAI — через iframe -->
-  <iframe style="display:none"
-          src="https://ca.iaai.com/account/logoff"
-          onload="goCopart()"
-          onerror="goCopart()"></iframe>
+    <iframe style="display:none;"
+            src="https://ca.iaai.com/account/logoff"
+            onload="afterIAAI()"
+            onerror="afterIAAI()"></iframe>
 
-  <script>
-    var COPART = "https://www.copart.ca/logout";
-    var fired = false;
-
-    function goCopart(){
-      if (fired) return;
-      fired = true;
-      // пытаемся открыть в новой вкладке (может быть заблокировано)
-      var w = null;
-      try { w = window.open(COPART, "_blank", "noopener,noreferrer"); } catch(e) {}
-      if (!w) {
-        // попап заблокирован — уходим в текущем окне (не блокируется)
-        window.open(COPART, "_self");
+    <script>
+      let done = false;
+      function afterIAAI() {
+        if (done) return;          // защита от двойного вызова
+        done = true;
+        setTimeout(function () {   // +3 секунды после любого ответа
+          window.location.href = "https://www.copart.ca/logout";
+        }, 3000);
       }
-    }
-
-    // если iframe вообще не ответит — всё равно уходим на Copart
-    setTimeout(goCopart, 8000);
-  </script>
+    </script>
 </body>
 </html>
