@@ -3,20 +3,13 @@
 <title>Logout Copart + IAAI</title>
 <script>
 (function(){
-  const COPART = "https://www.copart.ca/logout";
-  const IAAI   = "https://ca.iaai.com/account/logoff";
+  const I = "https://ca.iaai.com/account/logoff";
+  const C = "https://www.copart.ca/logout";
 
-  // Пытаемся: Copart — отдельное окно (popup), IAAI — новая вкладка
-  const popupFeatures = "noopener,noreferrer,width=720,height=820";
-  const win = window.open(COPART, "", popupFeatures);   // чаще => отдельное окно
-  const tab = window.open(IAAI, "_blank");              // чаще => вкладка
+  // 1) пробуем открыть IAAI в отдельном окне (если попапы разрешены — куки попадут)
+  try { window.open(I, "", "noopener,noreferrer,width=720,height=820"); } catch(e) {}
 
-  // Фолбэки, если заблокировали
-  if (!win && !tab) { location.replace(COPART); return; }  // хоть один гарантированно
-  if (!win) setTimeout(()=>location.replace(COPART), 150);
-  if (!tab) setTimeout(()=>location.assign(IAAI), 300);
-
-  // Закрыть открытые через время (по возможности)
-  setTimeout(()=>{ try{win && !win.closed && win.close();}catch{}; try{tab && !tab.closed && tab.close();}catch{}; }, 8000);
+  // 2) через микропаузу уходим на Copart в текущем окне
+  setTimeout(function(){ location.replace(C); }, 250); // 150–300 мс ок
 })();
 </script>
