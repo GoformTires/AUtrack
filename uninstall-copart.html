@@ -1,15 +1,43 @@
-<!doctype html>
-<meta charset="utf-8">
-<title>Uninstall logout</title>
-<script>
-(function(){
-  const IAAI = "https://ca.iaai.com/account/logoff";
-  const COP  = "https://www.copart.ca/logout";
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Выход из Copart и IAAI</title>
+  <style>
+    button { padding: 10px 14px; border: 0; border-radius: 10px; cursor: pointer; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Выйти из Copart и IAAI</h1>
+  <button id="logoutBoth">Выйти из обоих аккаунтов</button>
 
-  // Пытаемся открыть второй логаут во вкладке (может быть заблокировано)
-  try { window.open(IAAI, "_blank", "noopener,noreferrer"); } catch(e) {}
+  <script>
+    (function(){
+      const IAAI   = "https://ca.iaai.com/account/logoff";
+      const COPART = "https://www.copart.ca/logout";
+      const CLOSE_MS = 8000; // через сколько закрыть вкладки
 
-  // Единственно надежный переход — в этом окне:
-  location.replace(COP);
-})();
-</script>
+      document.getElementById("logoutBoth").addEventListener("click", () => {
+        // Открываем оба логаута в новых вкладках
+        const w1 = window.open(IAAI,   "_blank", "noopener,noreferrer,width=700,height=800");
+        const w2 = window.open(COPART, "_blank", "noopener,noreferrer,width=700,height=800");
+
+        // Фолбэк: если какая-то вкладка не открылась (блокировщик), делаем переход текущим окном
+        if (!w1 && !w2) {
+          // приоритет — Copart; поменяйте порядок, если нужно наоборот
+          window.open(COPART, "_self");
+          return;
+        }
+        if (!w1) window.open(IAAI, "_self");
+        if (!w2) window.open(COPART, "_self");
+
+        // Закрываем открытые вкладки через задержку
+        setTimeout(() => {
+          try { if (w1 && !w1.closed) w1.close(); } catch {}
+          try { if (w2 && !w2.closed) w2.close(); } catch {}
+        }, CLOSE_MS);
+      });
+    })();
+  </script>
+</body>
+</html>
