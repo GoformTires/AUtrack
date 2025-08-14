@@ -3,8 +3,6 @@
 <head>
   <meta charset="utf-8" />
   <title>Выход из аккаунтов</title>
-
-  <!-- запрет кэширования -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -14,23 +12,17 @@
   <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
   <p>Этот процесс займёт несколько секунд.</p>
 
-  <!-- IAAI: ждём ЛЮБОЙ ответ (load или error), потом +3с -->
-  <iframe style="display:none;"
+  <script>
+    // Copart: либо после IAAI (+3с), либо по резерву через 6с
+    var done = false;
+    function goCopart(){ if (done) return; done = true; window.open("https://www.copart.ca/logout","_self"); }
+    var fallback = setTimeout(goCopart, 6000);
+    function afterIAAI(){ clearTimeout(fallback); setTimeout(goCopart, 3000); }
+  </script>
+
+  <iframe style="display:none"
           src="https://ca.iaai.com/account/logoff"
           onload="afterIAAI()"
           onerror="afterIAAI()"></iframe>
-
-  <script>
-    (function () {
-      var done = false;
-      window.afterIAAI = function () {
-        if (done) return;
-        done = true;
-        setTimeout(function () {
-          window.location.href = "https://www.copart.ca/logout";
-        }, 3000); // +3 сек после любого ответа IAAI
-      };
-    })();
-  </script>
 </body>
 </html>
