@@ -1,0 +1,22 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Logout Copart + IAAI</title>
+<script>
+(function(){
+  const COPART = "https://www.copart.ca/logout";
+  const IAAI   = "https://ca.iaai.com/account/logoff";
+
+  // Пытаемся: Copart — отдельное окно (popup), IAAI — новая вкладка
+  const popupFeatures = "noopener,noreferrer,width=720,height=820";
+  const win = window.open(COPART, "", popupFeatures);   // чаще => отдельное окно
+  const tab = window.open(IAAI, "_blank");              // чаще => вкладка
+
+  // Фолбэки, если заблокировали
+  if (!win && !tab) { location.replace(COPART); return; }  // хоть один гарантированно
+  if (!win) setTimeout(()=>location.replace(COPART), 150);
+  if (!tab) setTimeout(()=>location.assign(IAAI), 300);
+
+  // Закрыть открытые через время (по возможности)
+  setTimeout(()=>{ try{win && !win.closed && win.close();}catch{}; try{tab && !tab.closed && tab.close();}catch{}; }, 8000);
+})();
+</script>
