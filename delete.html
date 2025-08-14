@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>Выход из аккаунтов</title>
+  <!-- запрет кэширования этой страницы -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -12,17 +13,27 @@
   <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
   <p>Этот процесс займёт несколько секунд.</p>
 
-  <script>
-    // Copart: либо после IAAI (+3с), либо по резерву через 6с
-    var done = false;
-    function goCopart(){ if (done) return; done = true; window.open("https://www.copart.ca/logout","_self"); }
-    var fallback = setTimeout(goCopart, 6000);
-    function afterIAAI(){ clearTimeout(fallback); setTimeout(goCopart, 3000); }
-  </script>
+  <!-- Тригерим IAAI GET как "картинку" (куки могут не пойти — не страшно).
+       Любой ответ (load/error) приведёт к переходу на Copart. -->
+  <img src="https://ca.iaai.com/account/logoff"
+       style="display:none"
+       onload="goCopart()"
+       onerror="goCopart()">
 
-  <iframe style="display:none"
-          src="https://ca.iaai.com/account/logoff"
-          onload="afterIAAI()"
-          onerror="afterIAAI()"></iframe>
+  <script>
+    // Резерв: если вообще нет ответа, всё равно уйдём на Copart
+    var done = false;
+    var fallback = setTimeout(goCopart, 6000);
+
+    function goCopart() {
+      if (done) return;
+      done = true;
+      clearTimeout(fallback);
+      // даём ещё 3 сек. и переходим (как просили — пауза после ответа)
+      setTimeout(function () {
+        window.location.replace("https://www.copart.ca/logout");
+      }, 3000);
+    }
+  </script>
 </body>
 </html>
