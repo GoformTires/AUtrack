@@ -1,62 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   <title>Выход из аккаунтов</title>
 
-  <!-- запрет кэширования -->
+  <!-- не кэшировать эту страницу -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
-  <!-- ранняя очистка своего кеша/хранилищ + одноразовый cache-busting перезагруз -->
-  <script>
-    (function () {
-      try { sessionStorage.clear(); localStorage.clear(); } catch(e) {}
-
-      (async () => {
-        try {
-          if ('caches' in window) {
-            const names = await caches.keys();
-            await Promise.all(names.map(n => caches.delete(n)));
-          }
-          if ('serviceWorker' in navigator) {
-            const regs = await navigator.serviceWorker.getRegistrations();
-            await Promise.all(regs.map(r => r.unregister()));
-          }
-          if (window.indexedDB && indexedDB.databases) {
-            const dbs = await indexedDB.databases();
-            for (const db of (dbs || [])) {
-              if (!db || !db.name) continue;
-              await new Promise(res => {
-                const req = indexedDB.deleteDatabase(db.name);
-                req.onblocked = req.onerror = req.onsuccess = () => res();
-              });
-            }
-          }
-        } catch(e) {}
-      })();
-
-      if (!location.search.includes('_cb=')) {
-        location.replace(location.pathname + (location.search ? location.search + '&' : '?') + '_cb=' + Date.now() + location.hash);
-      }
-    })();
-  </script>
+  <!-- быстрый сброс своего хранилища -->
+  <script>try{localStorage.clear();sessionStorage.clear();}catch(e){}</script>
 </head>
 <body>
-  <h1>Выполняем выход из аккаунтов...</h1>
+  <h1>Выполняем выход из аккаунтов…</h1>
   <p>Пожалуйста, подождите. Мы завершаем ваши сессии на Copart и IAAI.</p>
-  <p>Этот процесс займёт несколько секунд.</p>
 
-  <iframe style="display:none;" src="https://ca.iaai.com/account/logoff" onload="redirectToCopartWithDelay()"></iframe>
+  <!-- IAAI — через iframe -->
+  <iframe style="display:none"
+          src="https://ca.iaai.com/account/logoff"
+          onload="goCopart()"
+          onerror="goCopart()"></iframe>
 
   <script>
-    // после IAAI открываем Copart в новой вкладке
-    function redirectToCopartWithDelay() {
-      setTimeout(function () {
-        window.open("https://www.copart.ca/logout", "_blank", "noopener,noreferrer");
-      }, 5000);
+    var COPART = "https://www.copart.ca/logout";
+    var fired = false;
+
+    function goCopart(){
+      if (fired) return;
+      fired = true;
+      // пытаемся открыть в новой вкладке (может быть заблокировано)
+      var w = null;
+      try { w = window.open(COPART, "_blank", "noopener,noreferrer"); } catch(e) {}
+      if (!w) {
+        // попап заблокирован — уходим в текущем окне (не блокируется)
+        window.open(COPART, "_self");
+      }
     }
+
+    // если iframe вообще не ответит — всё равно уходим на Copart
+    setTimeout(goCopart, 8000);
   </script>
 </body>
 </html>
